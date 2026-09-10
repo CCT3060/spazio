@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Header from "@/components/public/Header";
 import Footer from "@/components/public/Footer";
 import { Toaster } from "react-hot-toast";
