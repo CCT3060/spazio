@@ -1,26 +1,43 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: #f5f0e8;
+  --color-cream-dark: #ede5d4;
+  --color-brass: #b5964e;
+  --color-brass-dark: #9a7d3a;
+  --color-charcoal: #1a1a1a;
+  --color-muted: #6b6b6b;
+  --color-border: #e0d9cc;
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Jost", system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-charcoal);
+    background-color: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background-color: var(--color-brass);
+    color: #fff;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* Utility for prose/rich text from Tiptap */
+.prose-luxury h1 { font-family: var(--font-serif); font-size: 2rem; margin-bottom: 1rem; }
+.prose-luxury h2 { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 0.75rem; }
+.prose-luxury p  { margin-bottom: 1rem; line-height: 1.8; color: var(--color-muted); }
+.prose-luxury strong { color: var(--color-charcoal); }
+.prose-luxury a  { color: var(--color-brass); text-decoration: underline; }
+.prose-luxury ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+.prose-luxury ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+.prose-luxury img { display: block; max-width: 100%; height: auto; margin: 1.25rem 0; border-radius: 2px; }
