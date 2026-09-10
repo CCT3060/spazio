@@ -15,8 +15,12 @@ function SocialIcon({ type, size = 18 }: { type: "instagram" | "facebook" | "pin
 }
 
 async function getSettings() {
-  const rows = await prisma.siteSetting.findMany();
-  return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  try {
+    const rows = await prisma.siteSetting.findMany();
+    return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  } catch {
+    return {} as Record<string, string>;
+  }
 }
 
 export default async function Footer() {

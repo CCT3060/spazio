@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import ContactForm from "./ContactForm";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Get in touch with the Spazio team. We'd love to hear from you.",
