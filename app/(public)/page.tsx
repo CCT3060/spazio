@@ -9,37 +9,40 @@ import NewsletterForm from "@/components/public/NewsletterForm";
 type Cat = { id: number; name: string; slug: string; imageUrl: string | null; description: string | null };
 
 async function getData() {
-  const [slides, sections, allCategories] = await Promise.all([
-    prisma.homepageSlide.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),
-    prisma.homepageSection.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),
-    prisma.category.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: "asc" },
-      select: { id: true, name: true, slug: true, imageUrl: true, description: true },
-    }),
-  ]);
+  try {
+    const [slides, sections, allCategories] = await Promise.all([
+      prisma.homepageSlide.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),
+      prisma.homepageSection.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: "asc" },
+        select: { id: true, name: true, slug: true, imageUrl: true, description: true },
+      }),
+    ]);
 
-  const showcaseSection = sections.find((s) => s.sectionType === "category_showcase") ?? null;
-  const tradeCta        = sections.find((s) => s.sectionType === "trade_cta")         ?? null;
+    const showcaseSection = sections.find((s) => s.sectionType === "category_showcase") ?? null;
+    const tradeCta        = sections.find((s) => s.sectionType === "trade_cta")         ?? null;
 
-  // All other sections, in sortOrder — these are the dynamic content blocks / trios
-  const dynamicSections = sections.filter(
-    (s) => s.sectionType !== "category_showcase" && s.sectionType !== "trade_cta"
-  );
+    const dynamicSections = sections.filter(
+      (s) => s.sectionType !== "category_showcase" && s.sectionType !== "trade_cta"
+    );
 
-  // Resolve showcase grid (up to 6 cats)
-  let showcaseCats: Cat[] = [];
-  if (showcaseSection?.bodyText) {
-    const slugs = showcaseSection.bodyText.split(",").map((s) => s.trim()).filter(Boolean);
-    showcaseCats = slugs
-      .map((sl) => allCategories.find((c) => c.slug === sl))
-      .filter((c): c is Cat => !!c)
-      .slice(0, 6);
-  } else {
-    showcaseCats = allCategories.slice(0, 6);
+    let showcaseCats: Cat[] = [];
+    if (showcaseSection?.bodyText) {
+      const slugs = showcaseSection.bodyText.split(",").map((s) => s.trim()).filter(Boolean);
+      showcaseCats = slugs
+        .map((sl) => allCategories.find((c) => c.slug === sl))
+        .filter((c): c is Cat => !!c)
+        .slice(0, 6);
+    } else {
+      showcaseCats = allCategories.slice(0, 6);
+    }
+
+    return { slides, showcaseCats, tradeCta, dynamicSections, allCategories };
+  } catch {
+    // DB unreachable — return empty state instead of crashing
+    return { slides: [], showcaseCats: [], tradeCta: null, dynamicSections: [], allCategories: [] };
   }
-
-  return { slides, showcaseCats, tradeCta, dynamicSections, allCategories };
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────────
